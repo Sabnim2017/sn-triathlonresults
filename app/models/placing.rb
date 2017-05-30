@@ -7,7 +7,7 @@ class Placing
   end
 
   def mongoize
-  	!(@name && @place).nil? ? {:name => @name, :place => @place} : nil
+  	!(@name || @place).nil? ? {:name => @name, :place => @place} : nil
   end
 
   def self.mongoize(object) 
