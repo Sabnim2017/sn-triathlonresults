@@ -1,16 +1,13 @@
 class Point
   attr_accessor :longitude, :latitude
 
-  def initialize(longitude=nil,latitude=nil)
-    @longitude = longitude
-    @latitude = latitude
+  def initialize(longitude,latitude)
+    @longitude = longitude.nil? ? nil : longitude
+    @latitude = latitude.nil? ? nil : latitude
   end
   
   def mongoize
-    hash = Hash.new
-    hash[:longitude] = @longitude if @longitude
-    hash[:latitude] = @latitude if @latitude
-    return hash
+      {:type=>"Point", :coordinates=>[@longitude, @latitude]} 
   end
 
   def self.mongoize(object) 

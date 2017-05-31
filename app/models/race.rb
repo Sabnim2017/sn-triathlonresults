@@ -27,6 +27,30 @@ class Race
     Placing.demongoize(:name=>name)
     end
   end
+  
+  def create_entrant racer
+    new_entrant = Entrant.new
+    new_entrant.race = (attributes.symbolize_keys.slice(:_id, :n, :date))
+    new_entrant.racer = racer.info.attributes
+    new_entrant.group  = get_group racer
+    events.each do |event|
+      if event 
+        new_entrant.send("#{event.name}=", event)
+      end
+    end
+    new_entrant.validate
+    if new_entrant.valid?
+      new_entrant.bib = next_bib
+      new_entrant.save
+      return new_entrant
+    end
+    else !new_entrant.valid?
+    return new_entrant   
+  end
+
+  def self.upcoming_available_to racer
+    
+  end
 
   DEFAULT_EVENTS = { "swim"=>{:order=>0, :name=>"swim", :distance=>1.0, :units=>"miles"}, 
  				             "t1"=> {:order=>1, :name=>"t1"}, 

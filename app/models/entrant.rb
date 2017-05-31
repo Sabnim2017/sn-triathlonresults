@@ -16,6 +16,9 @@ class Entrant
   field :gender, type: Placing
   field :group, type: Placing
 
+  scope :upcoming, ->{where(:date.gte => Date.today)}
+  scope :past, ->{where(:date.lt => Date.today)}
+
   def update_total(result)
  	  self.secs = 0.0
   	self.secs=results.map {|r|r.secs}.select{|r|r}.inject(0, :+)

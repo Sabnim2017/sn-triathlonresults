@@ -1,17 +1,17 @@
 class Address
   attr_accessor :city, :state, :location
 
-  def initialize(city=nil,state=nil,location=nil)
+  def initialize(city=nil,state=nil,location)
     @city = city
     @state = state
-    @location = Point.new(location[:coordinates][0],location[:coordinates][1]) if location
+    @location = location.nil? ? nil : Point.new(location[:coordinates][0],location[:coordinates][1])
   end
 
   def mongoize
     hash = Hash.new
     hash[:city] = @city if @city
     hash[:state] = @state if @state
-    hash[:loc] = Point.mongoize(@location) if @location
+    hash[:loc] = Point.mongoize(@location) 
     return hash
   end
 
