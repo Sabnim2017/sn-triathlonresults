@@ -7,7 +7,9 @@ class Point
   end
   
   def mongoize
+    if @longitude&&@latitude
       {:type=>"Point", :coordinates=>[@longitude, @latitude]} 
+    end
   end
 
   def self.mongoize(object) 

@@ -9,15 +9,14 @@ class Entrant
   embeds_one :race, class_name: "RaceRef", autobuild: true
   embeds_one :racer, as: :parent, class_name: "RacerInfo", autobuild: true 
 
+  scope :upcoming, -> {where(:"race.date".gte => Date.current)}
+  scope :past, -> {where(:"race.date".lt => Date.current)}
 
   field :bib, type: Integer
   field :secs, type: Float
   field :o, as: :overall, type: Placing
   field :gender, type: Placing
   field :group, type: Placing
-
-  scope :upcoming, ->{where(:date.gte => Date.today)}
-  scope :past, ->{where(:date.lt => Date.today)}
 
   def update_total(result)
  	  self.secs = 0.0

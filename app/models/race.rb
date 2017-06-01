@@ -8,10 +8,10 @@ class Race
   field :next_bib, type: Integer, default: 0
 
   embeds_many :events, as: :parent, class_name: "Event", order: [:o.asc]
-  has_many :entrants, foreign_key: "race._id", :dependent => :delete, order: [:secs.asc, :bib.asc]
+  has_many :entrants, foreign_key: :"race._id", :dependent => :delete, order: [:secs.asc, :bib.asc]
 
-  scope :upcoming, ->{where(:date.gte => Date.today)}
-  scope :past, ->{where(:date.lt => Date.today)}
+  scope :upcoming, -> {where(:date.gte => Date.current)}
+  scope :past, -> {where(:date.lt => Date.current)}
 
   def next_bib
     self.inc(next_bib: 1)[:next_bib]
@@ -43,13 +43,15 @@ class Race
       new_entrant.bib = next_bib
       new_entrant.save
       return new_entrant
-    end
     else !new_entrant.valid?
-    return new_entrant   
+    return new_entrant  
+    end
   end
 
   def self.upcoming_available_to racer
-    
+     upcoming_race_ids= Race.upcoming.all.map {|race| race[:_id]} 
+     racer_signed_up_for = racer.races.upcoming.pluck(:race).map{|r| r[:_id]}  
+     self.in(:id=>(upcoming_race_ids - racer_signed_up_for))
   end
 
   DEFAULT_EVENTS = { "swim"=>{:order=>0, :name=>"swim", :distance=>1.0, :units=>"miles"}, 
